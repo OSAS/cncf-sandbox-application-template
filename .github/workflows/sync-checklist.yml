@@ -35,9 +35,11 @@ jobs:
       - name: Update APPLICATION.md checkbox
         if: steps.slug.outputs.found == 'true'
         id: update
+        env:
+          CHECKLIST_SLUG: ${{ steps.slug.outputs.slug }}
+          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          slug="${{ steps.slug.outputs.slug }}"
-          marker="<!-- checklist:${slug} -->"
+          marker="<!-- checklist:${CHECKLIST_SLUG} -->"
 
           if ! grep -qF "$marker" APPLICATION.md; then
             echo "Marker not found in APPLICATION.md: $marker"
@@ -46,14 +48,15 @@ jobs:
           fi
 
           python3 <<'PY'
+          import os
           import re
           import sys
 
-          slug = "${{ steps.slug.outputs.slug }}"
+          slug = os.environ["CHECKLIST_SLUG"]
+          issue_number = os.environ["ISSUE_NUMBER"]
           marker = f"<!-- checklist:{slug} -->"
-          path = "APPLICATION.md"
 
-          with open(path, "r", encoding="utf-8") as f:
+          with open("APPLICATION.md", "r", encoding="utf-8") as f:
               content = f.read()
 
           pattern = re.compile(
@@ -62,7 +65,7 @@ jobs:
           )
 
           new_content, count = pattern.subn(
-              lambda m: f"- [x] {m.group(1)} {marker} (#${{ github.event.issue.number }})",
+              lambda m: f"- [x] {m.group(1)} {marker} (#{issue_number})",
               content,
               count=1,
           )
@@ -71,7 +74,7 @@ jobs:
               print(f"No unchecked item found for slug: {slug}")
               sys.exit(0)
 
-          with open(path, "w", encoding="utf-8") as f:
+          with open("APPLICATION.md", "w", encoding="utf-8") as f:
               f.write(new_content)
 
           print(f"Updated checkbox for {slug}")
