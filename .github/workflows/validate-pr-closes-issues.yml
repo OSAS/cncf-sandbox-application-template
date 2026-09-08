@@ -1,0 +1,45 @@
+name: Validate PR closes checklist issues
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  issues: write
+  pull-requests: read
+
+jobs:
+  comment-missing-closes:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check for closing keywords
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const closesPattern = /\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\s+#(\d+)/gi;
+            const matches = [...body.matchAll(closesPattern)];
+
+            if (matches.length > 0) {
+              core.info(`PR references issues: ${matches.map(m => '#' + m[1]).join(', ')}`);
+              return;
+            }
+
+            await github.rest.issues.createComment({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              body: [
+                '### Checklist reminder',
+                '',
+                'This PR does not reference any checklist issues with closing keywords.',
+                '',
+                'To automatically close a checklist issue when this PR merges, add one of the following to the PR description:',
+                '',
+                '```',
+                'Closes #123',
+                '```',
+                '',
+                'See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.'
+              ].join('\n')
+            });

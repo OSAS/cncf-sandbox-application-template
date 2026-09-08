@@ -1,0 +1,97 @@
+name: Sync checklist on issue close
+
+on:
+  issues:
+    types: [closed]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  sync-checklist:
+    runs-on: ubuntu-latest
+    if: contains(github.event.issue.labels.*.name, 'checklist-item')
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Find checklist slug from labels
+        id: slug
+        run: |
+          slug=$(echo '${{ toJson(github.event.issue.labels.*.name) }}' | jq -r '.[] | select(startswith("checklist:") and . != "checklist-item") | sub("checklist:"; "")')
+          if [ -z "$slug" ]; then
+            echo "No checklist slug label found; skipping."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          echo "slug=$slug" >> "$GITHUB_OUTPUT"
+          echo "found=true" >> "$GITHUB_OUTPUT"
+          echo "Syncing checklist item: $slug (issue #${{ github.event.issue.number }})"
+
+      - name: Update APPLICATION.md checkbox
+        if: steps.slug.outputs.found == 'true'
+        id: update
+        run: |
+          slug="${{ steps.slug.outputs.slug }}"
+          marker="<!-- checklist:${slug} -->"
+
+          if ! grep -qF "$marker" APPLICATION.md; then
+            echo "Marker not found in APPLICATION.md: $marker"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          python3 <<'PY'
+          import re
+          import sys
+
+          slug = "${{ steps.slug.outputs.slug }}"
+          marker = f"<!-- checklist:{slug} -->"
+          path = "APPLICATION.md"
+
+          with open(path, "r", encoding="utf-8") as f:
+              content = f.read()
+
+          pattern = re.compile(
+              rf"^- \[ \] (.+?) {re.escape(marker)}.*$",
+              re.MULTILINE,
+          )
+
+          new_content, count = pattern.subn(
+              lambda m: f"- [x] {m.group(1)} {marker} (#${{ github.event.issue.number }})",
+              content,
+              count=1,
+          )
+
+          if count == 0:
+              print(f"No unchecked item found for slug: {slug}")
+              sys.exit(0)
+
+          with open(path, "w", encoding="utf-8") as f:
+              f.write(new_content)
+
+          print(f"Updated checkbox for {slug}")
+          PY
+
+          if git diff --quiet APPLICATION.md; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create pull request with checklist update
+        if: steps.update.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "docs: mark checklist item ${{ steps.slug.outputs.slug }} complete"
+          title: "docs: sync checklist — ${{ steps.slug.outputs.slug }}"
+          body: |
+            Automatically updates [APPLICATION.md](APPLICATION.md) after checklist issue #${{ github.event.issue.number }} was closed.
+
+            Closes checklist item: `${{ steps.slug.outputs.slug }}`
+          branch: bot/sync-checklist-${{ steps.slug.outputs.slug }}-${{ github.event.issue.number }}
+          delete-branch: true

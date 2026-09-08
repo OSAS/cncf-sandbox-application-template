@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: CNCF Sandbox Application (official)
+    url: https://github.com/cncf/sandbox/issues/new?assignees=&labels=New&projects=&template=application.yml&title=%5BSandbox%5D+%3CProject+Name%3E
+    about: Submit the official CNCF sandbox application when all checklist items are complete
+  - name: CNCF TOC Process Documentation
+    url: https://github.com/cncf/toc/blob/main/process/README.md
+    about: Read the CNCF project lifecycle and sandbox application process
