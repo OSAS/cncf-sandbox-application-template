@@ -8,14 +8,8 @@
 
 Closes #
 
-## Application sections updated
+## Application fields updated
 
-<!-- Which application/*.md files were changed? -->
+<!-- Which field(s) in APPLICATION.md were changed? -->
 
-- [ ] application/01-basic-information.md
-- [ ] application/02-project-details.md
-- [ ] application/03-cloud-native-context.md
-- [ ] application/04-cncf-policies.md
-- [ ] application/05-pre-submission.md
-- [ ] application/06-contact-information.md
-- [ ] application/07-additional-information.md
+- [ ] See [APPLICATION.md](../APPLICATION.md) — list field IDs here, e.g. `project_summary`, `maintainers_file`

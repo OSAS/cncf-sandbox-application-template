@@ -9,192 +9,192 @@
     "title": "[Application] Project summary and description",
     "labels": ["checklist-item", "checklist:project-summary", "phase:basic-info"],
     "template": "checklist-item.md",
-    "body": "Draft the one-line project summary and 100–300 word project description for the sandbox application.\n\nAdd content to `application/01-basic-information.md`.\n\nWhen complete, open a PR and include `Closes #ISSUE_NUMBER` in the PR description."
+    "body": "Draft the one-line project summary and 100–300 word project description for the sandbox application.\n\nUpdate the `project_summary` and `project_description` fields in [APPLICATION.md](../APPLICATION.md).\n\nWhen complete, open a PR and include `Closes #ISSUE_NUMBER` in the PR description."
   },
   "reusable-project": {
     "title": "[Critical] Confirm project is reusable (not a reference architecture)",
     "labels": ["checklist-item", "checklist:reusable-project", "phase:basic-info", "critical"],
     "template": "checklist-item.md",
-    "body": "Confirm this is a reusable open source project designed for broad adoption—not a reference architecture, reference implementation, or company-specific platform.\n\nDocument the rationale in `application/01-basic-information.md`. If this is a reference architecture, apply to [CNCF Reference Architectures](https://architecture.cncf.io/) instead.\n\nWhen complete, open a PR and include `Closes #ISSUE_NUMBER` in the PR description."
+    "body": "Confirm this is a reusable open source project designed for broad adoption—not a reference architecture, reference implementation, or company-specific platform.\n\nCheck the box in the `not_reference_architecture` field in [APPLICATION.md](../APPLICATION.md). If this is a reference architecture, apply to [CNCF Reference Architectures](https://architecture.cncf.io/) instead.\n\nWhen complete, open a PR and include `Closes #ISSUE_NUMBER` in the PR description."
   },
   "org-and-repo-urls": {
     "title": "[Application] Org and repository URLs",
     "labels": ["checklist-item", "checklist:org-and-repo-urls", "phase:project-details"],
     "template": "checklist-item.md",
-    "body": "Document org repo URL, primary project repo URL, and any additional repos in scope in `application/02-project-details.md`."
+    "body": "Document org repo URL, primary project repo URL, and any additional repos in scope.\n\nUpdate `org_repo_url`, `project_repo_url`, and `additional_repos` in [APPLICATION.md](../APPLICATION.md)."
   },
   "parent-separation-vote": {
     "title": "[Critical] Parent project separation vote (if applicable)",
     "labels": ["checklist-item", "checklist:parent-separation-vote", "phase:project-details", "critical"],
     "template": "checklist-item.md",
-    "body": "If the project is separating from a parent organization, link to a public issue in the parent project showing maintainer consensus to split.\n\nIf not applicable, document \"N/A\" with rationale in `application/02-project-details.md`."
+    "body": "If the project is separating from a parent organization, link to a public issue in the parent project showing maintainer consensus to split.\n\nIf not applicable, document \"N/A\" in the `parent_separation_vote` field in [APPLICATION.md](../APPLICATION.md)."
   },
   "website-url": {
     "title": "[Application] Website URL",
     "labels": ["checklist-item", "checklist:website-url", "phase:project-details"],
     "template": "checklist-item.md",
-    "body": "Provide the project website URL (or primary repo URL if no website) in `application/02-project-details.md`."
+    "body": "Provide the project website URL (or primary repo URL if no website).\n\nUpdate `website_url` in [APPLICATION.md](../APPLICATION.md)."
   },
   "roadmap": {
     "title": "[Application] Roadmap and roadmap context",
     "labels": ["checklist-item", "checklist:roadmap", "phase:project-details", "recommended"],
     "template": "checklist-item.md",
-    "body": "Provide a publicly accessible roadmap URL and optional context in `application/02-project-details.md`."
+    "body": "Provide a publicly accessible roadmap URL and optional context.\n\nUpdate `roadmap` and `roadmap_context` in [APPLICATION.md](../APPLICATION.md)."
   },
   "contributing-guide": {
     "title": "[Application] Contributing guide",
     "labels": ["checklist-item", "checklist:contributing-guide", "phase:project-details", "recommended"],
     "template": "checklist-item.md",
-    "body": "Provide a direct link to the project's contributing guide in `application/02-project-details.md`."
+    "body": "Provide a direct link to the project's contributing guide.\n\nUpdate `contributing_guide` in [APPLICATION.md](../APPLICATION.md)."
   },
   "code-of-conduct": {
     "title": "[Application] Code of Conduct",
     "labels": ["checklist-item", "checklist:code-of-conduct", "phase:project-details", "recommended"],
     "template": "checklist-item.md",
-    "body": "Provide a direct link to the project's Code of Conduct in `application/02-project-details.md`."
+    "body": "Provide a direct link to the project's Code of Conduct.\n\nUpdate `code_of_conduct` in [APPLICATION.md](../APPLICATION.md)."
   },
   "adopters": {
     "title": "[Application] Adopters list",
     "labels": ["checklist-item", "checklist:adopters", "phase:project-details", "recommended"],
     "template": "checklist-item.md",
-    "body": "Provide a link to the project's adopters file or document why one does not exist yet in `application/02-project-details.md`."
+    "body": "Provide a link to the project's adopters file or document why one does not exist yet.\n\nUpdate `adopters` in [APPLICATION.md](../APPLICATION.md)."
   },
   "maintainers-file": {
     "title": "[Critical] MAINTAINERS file with required columns",
     "labels": ["checklist-item", "checklist:maintainers-file", "phase:project-details", "critical"],
     "template": "checklist-item.md",
-    "body": "Create or verify `MAINTAINERS.md` with Name, GitHub ID, and Company/Organization columns. Provide a direct GitHub `/blob/` link—not a contributors graph.\n\nExample format:\n```markdown\n| Maintainer | GitHub ID | Company/Organization |\n| ---------- | --------- | -------------------- |\n| Jane Doe   | @janedoe  | Acme Corp            |\n```\n\nDocument the link in `application/02-project-details.md`."
+    "body": "Create or verify `MAINTAINERS.md` with Name, GitHub ID, and Company/Organization columns. Provide a direct GitHub `/blob/` link—not a contributors graph.\n\nExample format:\n```markdown\n| Maintainer | GitHub ID | Company/Organization |\n| ---------- | --------- | -------------------- |\n| Jane Doe   | @janedoe  | Acme Corp            |\n```\n\nDocument the link in the `maintainers_file` field in [APPLICATION.md](../APPLICATION.md)."
   },
   "security-policy": {
     "title": "[Application] Security policy (SECURITY.md)",
     "labels": ["checklist-item", "checklist:security-policy", "phase:project-details", "recommended"],
     "template": "checklist-item.md",
-    "body": "Provide a direct link to the project's security policy. See [security guidelines](https://contribute.cncf.io/maintainers/security/security-guidelines/#3-securitymd) and [templates](https://github.com/cncf/tag-security/tree/main/community/resources/project-resources/templates)."
+    "body": "Provide a direct link to the project's security policy. See [security guidelines](https://contribute.cncf.io/maintainers/security/security-guidelines/#3-securitymd) and [templates](https://github.com/cncf/tag-security/tree/main/community/resources/project-resources/templates).\n\nUpdate `security_policy` in [APPLICATION.md](../APPLICATION.md)."
   },
   "standard-or-spec": {
     "title": "[Application] Standard or specification details",
     "labels": ["checklist-item", "checklist:standard-or-spec", "phase:project-details"],
     "template": "checklist-item.md",
-    "body": "Document whether the project is or includes a standard or specification. Write \"N/A\" if not applicable in `application/02-project-details.md`."
+    "body": "Document whether the project is or includes a standard or specification. Write \"N/A\" if not applicable.\n\nUpdate `standard_or_spec` in [APPLICATION.md](../APPLICATION.md)."
   },
   "product-separation": {
     "title": "[Application] Business product/service separation",
     "labels": ["checklist-item", "checklist:product-separation", "phase:project-details"],
     "template": "checklist-item.md",
-    "body": "Explain how the project is separated from any related commercial products or services in `application/02-project-details.md`."
+    "body": "Explain how the project is separated from any related commercial products or services.\n\nUpdate `product_separation` in [APPLICATION.md](../APPLICATION.md)."
   },
   "why-cncf": {
     "title": "[Application] Why CNCF?",
     "labels": ["checklist-item", "checklist:why-cncf", "phase:cloud-native"],
     "template": "checklist-item.md",
-    "body": "Draft why the project wants to join CNCF and what value CNCF membership provides in `application/03-cloud-native-context.md`."
+    "body": "Draft why the project wants to join CNCF and what value CNCF membership provides.\n\nUpdate `why_cncf` in [APPLICATION.md](../APPLICATION.md)."
   },
   "landscape-benefit": {
     "title": "[Application] Benefit to the Cloud Native Landscape",
     "labels": ["checklist-item", "checklist:landscape-benefit", "phase:cloud-native"],
     "template": "checklist-item.md",
-    "body": "Describe how the project benefits the landscape and its differentiator in `application/03-cloud-native-context.md`."
+    "body": "Describe how the project benefits the landscape and its differentiator.\n\nUpdate `landscape_benefit` in [APPLICATION.md](../APPLICATION.md)."
   },
   "cloud-native-fit": {
     "title": "[Application] Cloud native fit",
     "labels": ["checklist-item", "checklist:cloud-native-fit", "phase:cloud-native"],
     "template": "checklist-item.md",
-    "body": "Explain where the project fits in the cloud native landscape in `application/03-cloud-native-context.md`."
+    "body": "Explain where the project fits in the cloud native landscape.\n\nUpdate `cloud_native_fit` in [APPLICATION.md](../APPLICATION.md)."
   },
   "cloud-native-integration": {
     "title": "[Application] Cloud native integration",
     "labels": ["checklist-item", "checklist:cloud-native-integration", "phase:cloud-native"],
     "template": "checklist-item.md",
-    "body": "Document which CNCF projects this complements or depends on in `application/03-cloud-native-context.md`."
+    "body": "Document which CNCF projects this complements or depends on.\n\nUpdate `cloud_native_integration` in [APPLICATION.md](../APPLICATION.md)."
   },
   "cloud-native-overlap": {
     "title": "[Application] Cloud native overlap",
     "labels": ["checklist-item", "checklist:cloud-native-overlap", "phase:cloud-native", "recommended"],
     "template": "checklist-item.md",
-    "body": "Document overlapping CNCF projects and how you differentiate in `application/03-cloud-native-context.md`."
+    "body": "Document overlapping CNCF projects and how you differentiate.\n\nUpdate `cloud_native_overlap` in [APPLICATION.md](../APPLICATION.md)."
   },
   "similar-projects": {
     "title": "[Application] Similar projects",
     "labels": ["checklist-item", "checklist:similar-projects", "phase:cloud-native", "recommended"],
     "template": "checklist-item.md",
-    "body": "List similar projects in CNCF or elsewhere (or \"N/A\") in `application/03-cloud-native-context.md`."
+    "body": "List similar projects in CNCF or elsewhere (or \"N/A\").\n\nUpdate `similar_projects` in [APPLICATION.md](../APPLICATION.md)."
   },
   "landscape-listing": {
     "title": "[Application] Cloud Native Landscape listing",
     "labels": ["checklist-item", "checklist:landscape-listing", "phase:cloud-native"],
     "template": "checklist-item.md",
-    "body": "Document whether the project is listed on [landscape.cncf.io](https://landscape.cncf.io/) in `application/03-cloud-native-context.md`."
+    "body": "Document whether the project is listed on [landscape.cncf.io](https://landscape.cncf.io/).\n\nUpdate `landscape` in [APPLICATION.md](../APPLICATION.md)."
   },
   "lfx-insights": {
     "title": "[Application] LFX Insights listing",
     "labels": ["checklist-item", "checklist:lfx-insights", "phase:cloud-native"],
     "template": "checklist-item.md",
-    "body": "Document whether the project is listed on [LFX Insights](https://insights.linuxfoundation.org/) in `application/03-cloud-native-context.md`."
+    "body": "Document whether the project is listed on [LFX Insights](https://insights.linuxfoundation.org/).\n\nUpdate `insights` in [APPLICATION.md](../APPLICATION.md)."
   },
   "trademark-agreement": {
     "title": "[Application] Trademark and accounts agreement",
     "labels": ["checklist-item", "checklist:trademark-agreement", "phase:cncf-policies"],
     "template": "checklist-item.md",
-    "body": "Confirm agreement to donate project trademarks and accounts to CNCF if accepted. Document in `application/04-cncf-policies.md`."
+    "body": "Confirm agreement to donate project trademarks and accounts to CNCF if accepted.\n\nCheck the box in `trademark_agreement` in [APPLICATION.md](../APPLICATION.md)."
   },
   "ip-policy-agreement": {
     "title": "[Application] CNCF IP policy agreement",
     "labels": ["checklist-item", "checklist:ip-policy-agreement", "phase:cncf-policies"],
     "template": "checklist-item.md",
-    "body": "Confirm agreement to follow the CNCF IP Policy if accepted. Document in `application/04-cncf-policies.md`."
+    "body": "Confirm agreement to follow the CNCF IP Policy if accepted.\n\nCheck the box in `ip_policy_agreement` in [APPLICATION.md](../APPLICATION.md)."
   },
   "apache-2-license": {
     "title": "[Critical] Apache 2.0 license compliance",
     "labels": ["checklist-item", "checklist:apache-2-license", "phase:cncf-policies", "critical"],
     "template": "checklist-item.md",
-    "body": "Verify the project uses Apache 2.0 (or document required license exception). License must be compliant **before** acceptance.\n\nDocument evidence in `application/04-cncf-policies.md` and link to the LICENSE file in the project repo."
+    "body": "Verify the project uses Apache 2.0 (or document required license exception). License must be compliant **before** acceptance.\n\nDocument evidence in the `license` field in [APPLICATION.md](../APPLICATION.md) and link to the LICENSE file in the project repo."
   },
   "license-exception": {
     "title": "[Application] License exception review",
     "labels": ["checklist-item", "checklist:license-exception", "phase:cncf-policies"],
     "template": "checklist-item.md",
-    "body": "Document whether a license exception is needed. Write \"N/A\" if using Apache 2.0 in `application/04-cncf-policies.md`."
+    "body": "Document whether a license exception is needed. Write \"N/A\" if using Apache 2.0.\n\nUpdate `license_exception` in [APPLICATION.md](../APPLICATION.md)."
   },
   "dependency-licenses": {
     "title": "[Application] Dependency license compliance",
     "labels": ["checklist-item", "checklist:dependency-licenses", "phase:cncf-policies"],
     "template": "checklist-item.md",
-    "body": "Verify all dependencies use allowlisted licenses or approved exceptions. Document in `application/04-cncf-policies.md`."
+    "body": "Verify all dependencies use allowlisted licenses or approved exceptions.\n\nUpdate `dependency_licenses` in [APPLICATION.md](../APPLICATION.md)."
   },
   "domain-technical-review": {
     "title": "[Application] Domain Technical Review (optional)",
     "labels": ["checklist-item", "checklist:domain-technical-review", "phase:cncf-policies"],
     "template": "checklist-item.md",
-    "body": "Link any TAG engagement, presentations, or completed General Technical Review questionnaire in `application/04-cncf-policies.md`."
+    "body": "Link any TAG engagement, presentations, or completed General Technical Review questionnaire.\n\nUpdate `domain_technical_review` in [APPLICATION.md](../APPLICATION.md)."
   },
   "repo-age-and-activity": {
     "title": "[Critical] Repository age and active development",
     "labels": ["checklist-item", "checklist:repo-age-and-activity", "phase:pre-submission", "critical"],
     "template": "checklist-item.md",
-    "body": "Verify the repository is at least 6 months old with active development. Document evidence (creation date, recent commits, releases) in `application/05-pre-submission.md`."
+    "body": "Verify the repository is at least 6 months old with active development. Document evidence (creation date, recent commits, releases).\n\nUpdate `repo_age_evidence` in [APPLICATION.md](../APPLICATION.md)."
   },
   "maintainer-diversity": {
     "title": "[Recommended] Maintainer organization diversity",
     "labels": ["checklist-item", "checklist:maintainer-diversity", "phase:pre-submission", "recommended"],
     "template": "checklist-item.md",
-    "body": "Document maintainer employer diversity (different companies, not different GitHub orgs) in `application/05-pre-submission.md`."
+    "body": "Document maintainer employer diversity (different companies, not different GitHub orgs).\n\nUpdate `maintainer_diversity` in [APPLICATION.md](../APPLICATION.md)."
   },
   "contact-information": {
     "title": "[Application] Contact and signatory information",
     "labels": ["checklist-item", "checklist:contact-information", "phase:contact"],
     "template": "checklist-item.md",
-    "body": "Add application contact emails and Contribution Agreement signatory information to `application/06-contact-information.md`.\n\n**Do not commit private emails in public repos** if this application repo is public—use a private fork or store contacts in a secure location and reference that in the issue."
+    "body": "Add application contact emails and Contribution Agreement signatory information.\n\nUpdate `application_contact_emails` and `signatory_information` in [APPLICATION.md](../APPLICATION.md).\n\n**Do not commit private emails in public repos** if this application repo is public—use a private fork or store contacts in a secure location and fill them in only when generating the submission."
   },
   "additional-information": {
     "title": "[Application] Additional information and CNCF contacts",
     "labels": ["checklist-item", "checklist:additional-information", "phase:contact"],
     "template": "checklist-item.md",
-    "body": "Add CNCF contacts and any additional context for the TOC in `application/07-additional-information.md`."
+    "body": "Add CNCF contacts and any additional context for the TOC.\n\nUpdate `cncf_contacts` and `additional_information` in [APPLICATION.md](../APPLICATION.md)."
   },
   "final-review": {
     "title": "[Submit] Final application review and CNCF submission",
     "labels": ["checklist-item", "checklist:final-review", "phase:submit"],
     "template": "checklist-item.md",
-    "body": "Review all application sections, copy content into the [CNCF Sandbox Application form](https://github.com/cncf/sandbox/issues/new?assignees=&labels=New&projects=&template=application.yml&title=%5BSandbox%5D+%3CProject+Name%3E), and submit.\n\nLink the submitted CNCF issue in `APPLICATION.md` when done."
+    "body": "Review all application fields in [APPLICATION.md](../APPLICATION.md), then generate and submit the application:\n\n```bash\n./scripts/generate-submission.sh --validate\n./scripts/generate-submission.sh --create-issue --project-name \"YourProject\"\n```\n\nOr copy [CNCF-SUBMISSION.md](../CNCF-SUBMISSION.md) into a [new CNCF sandbox issue](https://github.com/cncf/sandbox/issues/new?assignees=&labels=New&projects=&template=application.yml&title=%5BSandbox%5D+%3CProject+Name%3E).\n\nLink the submitted CNCF issue in [README.md](../README.md) when done."
   }
 }
