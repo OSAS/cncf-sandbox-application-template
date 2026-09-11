@@ -1,0 +1,307 @@
+{
+  "title_prefix": "[Sandbox]",
+  "issue_labels": ["New", "contribution-agreement/unsigned"],
+  "sections": [
+    {
+      "heading": "## :clipboard: Basic project information",
+      "intro": "Describe the project at a high level.",
+      "fields": [
+        {
+          "id": "project_summary",
+          "label": "Project summary",
+          "type": "text",
+          "required": true,
+          "checklist": ["project-summary"]
+        },
+        {
+          "id": "project_description",
+          "label": "Project description",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["project-summary"]
+        },
+        {
+          "id": "not_reference_architecture",
+          "label": "This is a reusable open source project designed for broad adoption, not a reference architecture, reference implementation, or demonstration of patterns",
+          "type": "checkbox",
+          "required": true,
+          "checklist": ["reusable-project"]
+        }
+      ]
+    },
+    {
+      "heading": "## :books: Project details",
+      "intro": "Provide detailed information about the project and its current state.",
+      "fields": [
+        {
+          "id": "org_repo_url",
+          "label": "Org repo URL (provide if all repos under the org are in scope of the application)",
+          "type": "text",
+          "required": true,
+          "checklist": ["org-and-repo-urls"]
+        },
+        {
+          "id": "project_repo_url",
+          "label": "Project repo URL in scope of application",
+          "type": "text",
+          "required": true,
+          "checklist": ["org-and-repo-urls"]
+        },
+        {
+          "id": "additional_repos",
+          "label": "Additional repos in scope of the application",
+          "type": "textarea",
+          "required": false,
+          "checklist": ["org-and-repo-urls"]
+        },
+        {
+          "id": "parent_separation_vote",
+          "label": "Parent project separation vote (if applicable)",
+          "type": "textarea",
+          "required": false,
+          "checklist": ["parent-separation-vote"]
+        },
+        {
+          "id": "website_url",
+          "label": "Website URL",
+          "type": "text",
+          "required": true,
+          "checklist": ["website-url"]
+        },
+        {
+          "id": "roadmap",
+          "label": "Roadmap",
+          "type": "text",
+          "required": true,
+          "checklist": ["roadmap"]
+        },
+        {
+          "id": "roadmap_context",
+          "label": "Roadmap context",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["roadmap"]
+        },
+        {
+          "id": "contributing_guide",
+          "label": "Contributing guide",
+          "type": "text",
+          "required": true,
+          "checklist": ["contributing-guide"]
+        },
+        {
+          "id": "code_of_conduct",
+          "label": "Code of Conduct (CoC)",
+          "type": "text",
+          "required": true,
+          "checklist": ["code-of-conduct"]
+        },
+        {
+          "id": "adopters",
+          "label": "Adopters",
+          "type": "text",
+          "required": false,
+          "checklist": ["adopters"]
+        },
+        {
+          "id": "maintainers_file",
+          "label": "Maintainers file",
+          "type": "text",
+          "required": true,
+          "checklist": ["maintainers-file"]
+        },
+        {
+          "id": "security_policy",
+          "label": "Security policy file",
+          "type": "text",
+          "required": true,
+          "checklist": ["security-policy"]
+        },
+        {
+          "id": "standard_or_spec",
+          "label": "Standard or specification?",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["standard-or-spec"]
+        },
+        {
+          "id": "product_separation",
+          "label": "Business product or service to project separation",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["product-separation"]
+        }
+      ]
+    },
+    {
+      "heading": "## :cloud: Cloud native context",
+      "intro": "How does this project fit into the cloud native world?",
+      "fields": [
+        {
+          "id": "why_cncf",
+          "label": "Why CNCF?",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["why-cncf"]
+        },
+        {
+          "id": "landscape_benefit",
+          "label": "Benefit to the landscape",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["landscape-benefit"]
+        },
+        {
+          "id": "cloud_native_fit",
+          "label": "Cloud native 'fit'",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["cloud-native-fit"]
+        },
+        {
+          "id": "cloud_native_integration",
+          "label": "Cloud native 'integration'",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["cloud-native-integration"]
+        },
+        {
+          "id": "cloud_native_overlap",
+          "label": "Cloud native overlap",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["cloud-native-overlap"]
+        },
+        {
+          "id": "similar_projects",
+          "label": "Similar projects",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["similar-projects"]
+        },
+        {
+          "id": "landscape",
+          "label": "Landscape",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["landscape-listing"]
+        },
+        {
+          "id": "insights",
+          "label": "Insights",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["lfx-insights"]
+        }
+      ]
+    },
+    {
+      "heading": "## :blue_book: CNCF policies",
+      "intro": "Please provide details on how the project aligns with expectations of CNCF projects.",
+      "fields": [
+        {
+          "id": "trademark_agreement",
+          "label": "If the project is accepted, I agree to donate all project trademarks and accounts to the CNCF",
+          "type": "checkbox",
+          "required": true,
+          "checklist": ["trademark-agreement"]
+        },
+        {
+          "id": "ip_policy_agreement",
+          "label": "If the project is accepted, I agree the project will follow the CNCF IP Policy",
+          "type": "checkbox",
+          "required": true,
+          "checklist": ["ip-policy-agreement"]
+        },
+        {
+          "id": "license",
+          "label": "Project license (Apache 2.0)",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["apache-2-license"]
+        },
+        {
+          "id": "license_exception",
+          "label": "Will the project require a license exception?",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["license-exception"]
+        },
+        {
+          "id": "dependency_licenses",
+          "label": "Does the project utilize any dependencies with licenses not on the allowlist or an approved exception?",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["dependency-licenses"]
+        },
+        {
+          "id": "domain_technical_review",
+          "label": "Project \"Domain Technical Review\"",
+          "type": "textarea",
+          "required": false,
+          "checklist": ["domain-technical-review"]
+        }
+      ]
+    },
+    {
+      "heading": "## :white_check_mark: Pre-submission verification",
+      "intro": "Evidence for critical requirements reviewed before submission.",
+      "fields": [
+        {
+          "id": "repo_age_evidence",
+          "label": "Repository age and active development evidence",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["repo-age-and-activity"]
+        },
+        {
+          "id": "maintainer_diversity",
+          "label": "Maintainer organization diversity",
+          "type": "textarea",
+          "required": false,
+          "checklist": ["maintainer-diversity"]
+        }
+      ]
+    },
+    {
+      "heading": "## :envelope: Contact information",
+      "intro": "Provide information about who to contact with questions about the project and who will sign the Contribution Agreement.",
+      "fields": [
+        {
+          "id": "application_contact_emails",
+          "label": "Application contact email(s)",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["contact-information"]
+        },
+        {
+          "id": "signatory_information",
+          "label": "Contributing or sponsoring entity signatory information",
+          "type": "textarea",
+          "required": true,
+          "checklist": ["contact-information"]
+        }
+      ]
+    },
+    {
+      "heading": "## :heavy_plus_sign: Additional information",
+      "intro": "Add any other details about the project that can help inform the review.",
+      "fields": [
+        {
+          "id": "cncf_contacts",
+          "label": "CNCF contacts",
+          "type": "textarea",
+          "required": false,
+          "checklist": ["additional-information"]
+        },
+        {
+          "id": "additional_information",
+          "label": "Additional information",
+          "type": "textarea",
+          "required": false,
+          "checklist": ["additional-information"]
+        }
+      ]
+    }
+  ]
+}
