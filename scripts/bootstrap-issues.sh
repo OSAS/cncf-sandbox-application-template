@@ -2,7 +2,7 @@
 set -euo pipefail
 
 # Creates GitHub issues for each CNCF sandbox application checklist item and
-# updates README.md with the issue numbers.
+# updates APPLICATION.md with GitHub issue numbers.
 #
 # Prerequisites:
 #   - GitHub CLI (gh) installed and authenticated
@@ -23,7 +23,8 @@ set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 MAP_FILE="${ROOT_DIR}/.github/checklist-map.json"
-CHECKLIST_FILE="${ROOT_DIR}/README.md"
+CHECKLIST_FILE="${ROOT_DIR}/APPLICATION.md"
+README_FILE="${ROOT_DIR}/README.md"
 APPLICATION_FILE="${ROOT_DIR}/APPLICATION.md"
 REGISTRY_FILE="${ROOT_DIR}/.github/issue-registry.json"
 METADATA_FILE="${ROOT_DIR}/.github/project-metadata.json"
@@ -44,7 +45,8 @@ EXISTING_LABELS_FILE="$(mktemp)"
 
 cleanup() {
   rm -f "${SLUGS_FILE}" "${SLUGS_ORDERED_FILE}" "${REGISTRY_TMP}" \
-    "${LABELS_FILE}" "${EXISTING_LABELS_FILE}" "${CHECKLIST_FILE}.tmp"
+    "${LABELS_FILE}" "${EXISTING_LABELS_FILE}" \
+    "${CHECKLIST_FILE}.tmp" "${README_FILE}.tmp"
 }
 trap cleanup EXIT
 
@@ -244,7 +246,7 @@ validate_checklist_order() {
   map_slugs="$(jq -r 'keys[]' "${MAP_FILE}" | sort)"
   app_slugs="$(sort "${SLUGS_ORDERED_FILE}")"
   if [[ "${map_slugs}" != "${app_slugs}" ]]; then
-    echo "Error: checklist slugs in README.md do not match checklist-map.json" >&2
+    echo "Error: checklist slugs in APPLICATION.md do not match checklist-map.json" >&2
     comm -3 <<< "${map_slugs}" <<< "${app_slugs}" | sed 's/^/  /' >&2
     exit 1
   fi
@@ -309,7 +311,7 @@ while IFS= read -r slug; do
   body="$(jq -r --arg s "${slug}" '.[$s].body' "${MAP_FILE}")"
   placeholder="#ISSUE_$(echo "${slug}" | tr '[:lower:]-' '[:upper:]_')"
   body="${body//\#ISSUE_NUMBER/${placeholder}}"
-  footer=$'\n\n---\n**Checklist slug:** `'"${slug}"'`\n**Checklist marker:** `<!-- checklist:'"${slug}"' -->`\n**Application checklist:** See [README.md](README.md)'
+  footer=$'\n\n---\n**Checklist slug:** `'"${slug}"'`\n**Checklist marker:** `<!-- checklist:'"${slug}"' -->`\n**Application checklist:** See [APPLICATION.md](APPLICATION.md)'
 
   if [[ "${DRY_RUN}" == true ]]; then
     echo "[dry-run] Would create: ${title}"
@@ -335,13 +337,12 @@ while IFS= read -r slug; do
   printf '    "%s": %s' "${slug}" "${issue_number}" >> "${REGISTRY_TMP}"
 
   if [[ "${DRY_RUN}" == false ]]; then
-    cp "${CHECKLIST_FILE}" "${CHECKLIST_FILE}.tmp"
-    if sed --version >/dev/null 2>&1; then
-      sed -i "s/${placeholder}/#${issue_number}/g" "${CHECKLIST_FILE}.tmp"
-    else
-      sed -i '' "s/${placeholder}/#${issue_number}/g" "${CHECKLIST_FILE}.tmp"
-    fi
-    mv "${CHECKLIST_FILE}.tmp" "${CHECKLIST_FILE}"
+    python3 "${ROOT_DIR}/scripts/checklist_tracking.py" \
+      --root "${ROOT_DIR}" \
+      link-issue \
+      --slug "${slug}" \
+      --number "${issue_number}" \
+      --repo "${REPO}"
   fi
 done < "${SLUGS_FILE}"
 
@@ -361,9 +362,11 @@ trap - EXIT
 python3 "${UPDATE_PROGRESS}"
 
 echo
-echo "Updated README.md and wrote ${REGISTRY_FILE}"
+python3 "${ROOT_DIR}/scripts/sync_readme_from_application.py"
+
+echo "Updated APPLICATION.md, README.md, and wrote ${REGISTRY_FILE}"
 echo
 echo "Next steps:"
-echo "  git add README.md APPLICATION.md .github/project-metadata.json .github/issue-registry.json"
+echo "  git add APPLICATION.md README.md .github/project-metadata.json .github/issue-registry.json"
 echo "  git commit -m 'Bootstrap CNCF sandbox checklist issues'"
 echo "  git push"

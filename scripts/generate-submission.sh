@@ -89,5 +89,13 @@ if [[ "${CREATE_ISSUE}" == true ]]; then
     --label "${labels}" \
     --body-file "${OUTPUT_FILE}")"
   echo "Created: ${issue_url}"
-  echo "Add this link to README.md under 'Official CNCF application issue'."
+  export ROOT_DIR
+  python3 -c "
+from pathlib import Path
+import sys
+sys.path.insert(0, '${ROOT_DIR}/scripts')
+from generate_submission import record_submission_links
+record_submission_links(Path('${ROOT_DIR}'), '${issue_url}')
+"
+  echo "Updated README.md and APPLICATION.md (final_review) with the CNCF issue link."
 fi

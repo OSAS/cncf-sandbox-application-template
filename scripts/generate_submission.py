@@ -9,6 +9,39 @@ from pathlib import Path
 from typing import Dict, List
 
 
+CHECKLIST_LINE = re.compile(r"^- \[[ xX]\].*<!-- checklist:[a-z0-9-]+ -->.*$")
+FIELD_GUIDE = re.compile(
+    r"<!-- field-guide:start -->.*?<!-- field-guide:end -->\n*",
+    re.DOTALL,
+)
+YOUR_ANSWER = re.compile(r"^\*\*Your answer:\*\*.*\n*", re.MULTILINE)
+
+
+TRACKING_SUFFIX = re.compile(r" \((Issue|PR):.*\)\s*$")
+
+
+def strip_template_lines(body: str) -> str:
+    body = FIELD_GUIDE.sub("", body)
+    body = YOUR_ANSWER.sub("", body)
+    lines = []
+    for line in body.splitlines():
+        if CHECKLIST_LINE.match(line.strip()):
+            continue
+        if line.strip() == "_Optional notes._":
+            continue
+        lines.append(TRACKING_SUFFIX.sub("", line))
+    return "\n".join(lines).strip()
+
+
+def strip_checklist_lines(body: str) -> str:
+    lines = [
+        line
+        for line in body.splitlines()
+        if not CHECKLIST_LINE.match(line.strip())
+    ]
+    return "\n".join(lines).strip()
+
+
 def parse_answers(text: str) -> Dict[str, str]:
     sections: Dict[str, List[str]] = {}
     current = None
@@ -20,7 +53,10 @@ def parse_answers(text: str) -> Dict[str, str]:
             continue
         if current is not None:
             sections[current].append(line)
-    return {field_id: "\n".join(lines).strip() for field_id, lines in sections.items()}
+    return {
+        field_id: strip_template_lines("\n".join(lines))
+        for field_id, lines in sections.items()
+    }
 
 
 def is_checkbox_checked(value: str) -> bool:
@@ -107,6 +143,37 @@ def main() -> int:
 
     print(f"Wrote {output_file}")
     return 0
+
+
+def record_submission_links(root: Path, issue_url: str) -> None:
+    readme = root / "README.md"
+    if readme.is_file():
+        content = readme.read_text(encoding="utf-8")
+        content = re.sub(
+            r"> \*\*Official CNCF application issue:\*\*[^\n]*",
+            f"> **Official CNCF application issue:** {issue_url}",
+            content,
+            count=1,
+        )
+        readme.write_text(content, encoding="utf-8")
+
+    application = root / "APPLICATION.md"
+    if application.is_file():
+        sys.path.insert(0, str(root / "scripts"))
+        from apply_project_info import set_application_field  # noqa: WPS433
+
+        application.write_text(
+            set_application_field(
+                application.read_text(encoding="utf-8"),
+                "final_review",
+                f"CNCF sandbox application submitted: {issue_url}",
+            ),
+            encoding="utf-8",
+        )
+        sys.path.insert(0, str(root / "scripts"))
+        from checklist_tracking import sync_readme_dashboard  # noqa: WPS433
+
+        sync_readme_dashboard(root)
 
 
 if __name__ == "__main__":
