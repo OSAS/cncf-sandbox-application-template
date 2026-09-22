@@ -11,11 +11,10 @@ body:
         Use this template when creating a custom checklist item. For standard items, run `./scripts/bootstrap-issues.sh` instead—it creates all predefined checklist issues automatically.
 
         **Workflow**
-        1. Complete the work described in the linked checklist item in `README.md`.
-        2. Update the relevant field(s) in `APPLICATION.md`.
-        3. Open a pull request with your changes.
-        4. Include `Closes #ISSUE_NUMBER` in the PR description (replace with this issue's number).
-        5. When the PR merges, this issue closes automatically and the checklist in `README.md` is updated.
+        1. Open the matching section in `APPLICATION.md` (instructions and issue link are on the checklist line).
+        2. Complete **Your answer** and open a pull request that only changes `APPLICATION.md`.
+        3. Include `Closes #ISSUE_NUMBER` in the PR description (replace with this issue's number).
+        4. When the PR merges, this issue closes and the checkbox in `APPLICATION.md` is updated automatically.
 
   - type: textarea
     attributes:

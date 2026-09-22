@@ -3,7 +3,7 @@
     "title": "[Checklist] Review CNCF sandbox prerequisites",
     "labels": ["checklist-item", "checklist:read-prerequisites", "phase:prepare"],
     "template": "checklist-item.md",
-    "body": "Review the CNCF sandbox process documentation and policies before drafting the application.\n\n- [CNCF Sandbox README](https://github.com/cncf/sandbox/blob/main/README.md)\n- [CNCF Project Lifecycle & Process](https://github.com/cncf/toc/blob/main/process/README.md)\n- [CNCF IP Policy](https://github.com/cncf/foundation/blob/main/charter.md#11-ip-policy)\n- [CNCF Allowlist License Policy](https://github.com/cncf/foundation/blob/main/policies-guidance/allowed-third-party-license-policy.md)\n- [Sandbox support expectations](https://contribute.cncf.io/resources/project-services/maturity-levels/#sandbox)\n\nWhen complete, open a PR that documents your review notes in `docs/prerequisites-review.md` (or link to existing project docs) and include `Closes #ISSUE_NUMBER` in the PR description."
+    "body": "Review the CNCF sandbox prerequisites in the `read_prerequisites` section of [APPLICATION.md](../APPLICATION.md) (links and policy notes are there).\n\nWhen complete, add your review notes under **Your answer** in that section and open a PR with `Closes #ISSUE_NUMBER`."
   },
   "project-summary": {
     "title": "[Application] Project summary and description",
@@ -195,6 +195,6 @@
     "title": "[Submit] Final application review and CNCF submission",
     "labels": ["checklist-item", "checklist:final-review", "phase:submit"],
     "template": "checklist-item.md",
-    "body": "Review all application fields in [APPLICATION.md](../APPLICATION.md), then generate and submit the application:\n\n```bash\n./scripts/generate-submission.sh --validate\n./scripts/generate-submission.sh --create-issue --project-name \"YourProject\"\n```\n\nOr copy [CNCF-SUBMISSION.md](../CNCF-SUBMISSION.md) into a [new CNCF sandbox issue](https://github.com/cncf/sandbox/issues/new?assignees=&labels=New&projects=&template=application.yml&title=%5BSandbox%5D+%3CProject+Name%3E).\n\nLink the submitted CNCF issue in [README.md](../README.md) when done."
+    "body": "Follow the `final_review` section in [APPLICATION.md](../APPLICATION.md), then generate and submit:\n\n```bash\n./scripts/generate-submission.sh --validate\n./scripts/generate-submission.sh --create-issue --project-name \"YourProject\"\n```\n\n`--create-issue` records the CNCF issue link in APPLICATION.md and README. Open a PR with `Closes #ISSUE_NUMBER` when the final-review item is done."
   }
 }

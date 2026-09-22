@@ -1,0 +1,58 @@
+name: Sync checklist PR links
+
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  link-pr-on-checklist:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Issue links to PR links
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          issues="$(python3 -c "
+          import os, re
+          body = os.environ.get('PR_BODY') or ''
+          pat = re.compile(r'\\b(?:close[sd]?|fix(?:e[sd])?|resolve[sd]?)\\s+#(\\d+)', re.I)
+          nums = sorted(set(pat.findall(body)))
+          print(' '.join(nums))
+          ")"
+
+          if [ -z "${issues}" ]; then
+            echo "No closing keywords found in PR body; skipping."
+            exit 0
+          fi
+
+          python3 scripts/checklist_tracking.py link-pr \
+            --repo "${REPO}" \
+            --pr-number "${PR_NUMBER}" \
+            --issue-numbers ${issues}
+
+          python3 scripts/update_checklist_progress.py
+
+      - name: Commit checklist PR link updates
+        run: |
+          if git diff --quiet APPLICATION.md README.md; then
+            echo "No checklist tracking changes."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add APPLICATION.md README.md
+          git commit -m "docs: link checklist items to PR #${{ github.event.pull_request.number }}"
+          git push

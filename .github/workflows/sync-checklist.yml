@@ -32,57 +32,16 @@ jobs:
           echo "found=true" >> "$GITHUB_OUTPUT"
           echo "Syncing checklist item: $slug (issue #${{ github.event.issue.number }})"
 
-      - name: Update README.md checkbox
+      - name: Update APPLICATION.md checkbox
         if: steps.slug.outputs.found == 'true'
         id: update
         env:
           CHECKLIST_SLUG: ${{ steps.slug.outputs.slug }}
-          ISSUE_NUMBER: ${{ github.event.issue.number }}
         run: |
-          marker="<!-- checklist:${CHECKLIST_SLUG} -->"
-
-          if ! grep -qF "$marker" README.md; then
-            echo "Marker not found in README.md: $marker"
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          python3 <<'PY'
-          import os
-          import re
-          import sys
-
-          slug = os.environ["CHECKLIST_SLUG"]
-          issue_number = os.environ["ISSUE_NUMBER"]
-          marker = f"<!-- checklist:{slug} -->"
-
-          with open("README.md", "r", encoding="utf-8") as f:
-              content = f.read()
-
-          pattern = re.compile(
-              rf"^- \[ \] (.+?) {re.escape(marker)}.*$",
-              re.MULTILINE,
-          )
-
-          new_content, count = pattern.subn(
-              lambda m: f"- [x] {m.group(1)} {marker} (#{issue_number})",
-              content,
-              count=1,
-          )
-
-          if count == 0:
-              print(f"No unchecked item found for slug: {slug}")
-              sys.exit(0)
-
-          with open("README.md", "w", encoding="utf-8") as f:
-              f.write(new_content)
-
-          print(f"Updated checkbox for {slug}")
-          PY
-
+          python3 scripts/checklist_tracking.py complete-checkbox --slug "${CHECKLIST_SLUG}"
           python3 scripts/update_checklist_progress.py
 
-          if git diff --quiet README.md; then
+          if git diff --quiet APPLICATION.md README.md; then
             echo "changed=false" >> "$GITHUB_OUTPUT"
           else
             echo "changed=true" >> "$GITHUB_OUTPUT"
@@ -95,7 +54,7 @@ jobs:
           commit-message: "docs: mark checklist item ${{ steps.slug.outputs.slug }} complete"
           title: "docs: sync checklist — ${{ steps.slug.outputs.slug }}"
           body: |
-            Automatically updates [README.md](README.md) after checklist issue #${{ github.event.issue.number }} was closed.
+            Automatically updates [APPLICATION.md](APPLICATION.md) and [README.md](README.md) after checklist issue #${{ github.event.issue.number }} was closed.
 
             Closes checklist item: `${{ steps.slug.outputs.slug }}`
           branch: bot/sync-checklist-${{ steps.slug.outputs.slug }}-${{ github.event.issue.number }}

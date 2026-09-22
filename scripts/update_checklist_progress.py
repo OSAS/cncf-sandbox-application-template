@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Update the checklist progress indicator in README.md."""
+"""Update checklist progress indicator in README.md (computed from APPLICATION.md)."""
 
 import re
 import sys
@@ -42,15 +42,10 @@ def render_progress(completed: int, total: int) -> str:
     )
 
 
-def update_readme(path: Path) -> bool:
+def update_progress_block(path: Path, progress_block: str) -> bool:
     content = path.read_text(encoding="utf-8")
-
     if START_MARKER not in content or END_MARKER not in content:
-        print(f"Error: progress markers not found in {path}", file=sys.stderr)
         return False
-
-    completed, total = compute_progress(content)
-    progress_block = render_progress(completed, total)
 
     pattern = re.compile(
         rf"{re.escape(START_MARKER)}.*?{re.escape(END_MARKER)}",
@@ -58,22 +53,34 @@ def update_readme(path: Path) -> bool:
     )
     replacement = f"{START_MARKER}\n{progress_block}\n{END_MARKER}"
     new_content = pattern.sub(replacement, content, count=1)
-
     if new_content == content:
         return False
-
     path.write_text(new_content, encoding="utf-8")
-    print(f"Checklist progress: {completed}/{total} ({round((completed / total) * 100) if total else 0}%)")
     return True
 
 
 def main() -> int:
     root = Path(__file__).resolve().parent.parent
-    readme = root / "README.md"
-    if not readme.is_file():
-        print(f"Error: {readme} not found", file=sys.stderr)
+    application = root / "APPLICATION.md"
+
+    if not application.is_file():
+        print(f"Error: {application} not found", file=sys.stderr)
         return 1
-    update_readme(readme)
+
+    completed, total = compute_progress(application.read_text(encoding="utf-8"))
+    progress_block = render_progress(completed, total)
+
+    readme = root / "README.md"
+    update_progress_block(readme, progress_block)
+
+    import sys
+
+    sys.path.insert(0, str(root / "scripts"))
+    from checklist_tracking import sync_readme_dashboard
+
+    sync_readme_dashboard(root)
+
+    print(f"Checklist progress: {completed}/{total} ({round((completed / total) * 100) if total else 0}%)")
     return 0
 
 
