@@ -236,20 +236,38 @@ reverse_lines() {
 }
 
 build_checklist_order() {
-  grep -oE 'checklist:[a-z0-9-]+' "${CHECKLIST_FILE}" \
-    | sed 's/checklist://' \
+  # Prefer HTML comment markers so prose mentions of "checklist:" are ignored.
+  grep -oE '<!-- checklist:[a-z0-9-]+ -->' "${CHECKLIST_FILE}" \
+    | sed -E 's/<!-- checklist:([a-z0-9-]+) -->/\1/' \
     | awk '!seen[$0]++' > "${SLUGS_ORDERED_FILE}"
 }
 
 validate_checklist_order() {
-  local map_slugs app_slugs
-  map_slugs="$(jq -r 'keys[]' "${MAP_FILE}" | sort)"
-  app_slugs="$(sort "${SLUGS_ORDERED_FILE}")"
-  if [[ "${map_slugs}" != "${app_slugs}" ]]; then
-    echo "Error: checklist slugs in APPLICATION.md do not match checklist-map.json" >&2
-    comm -3 <<< "${map_slugs}" <<< "${app_slugs}" | sed 's/^/  /' >&2
-    exit 1
+  local map_file app_file only_map only_app
+  map_file="$(mktemp)"
+  app_file="$(mktemp)"
+  jq -r 'keys[]' "${MAP_FILE}" | LC_ALL=C sort > "${map_file}"
+  LC_ALL=C sort "${SLUGS_ORDERED_FILE}" > "${app_file}"
+
+  if cmp -s "${map_file}" "${app_file}"; then
+    rm -f "${map_file}" "${app_file}"
+    return 0
   fi
+
+  only_map="$(comm -23 "${map_file}" "${app_file}" || true)"
+  only_app="$(comm -13 "${map_file}" "${app_file}" || true)"
+  rm -f "${map_file}" "${app_file}"
+
+  echo "Error: checklist slugs in APPLICATION.md do not match checklist-map.json" >&2
+  if [[ -n "${only_map}" ]]; then
+    echo "  Present in checklist-map.json but missing from APPLICATION.md:" >&2
+    sed 's/^/    - /' <<< "${only_map}" >&2
+  fi
+  if [[ -n "${only_app}" ]]; then
+    echo "  Present in APPLICATION.md but missing from checklist-map.json:" >&2
+    sed 's/^/    - /' <<< "${only_app}" >&2
+  fi
+  exit 1
 }
 
 ensure_labels() {

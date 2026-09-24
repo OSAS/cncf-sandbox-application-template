@@ -42,9 +42,9 @@ When the PR merges to the default branch, GitHub closes the linked issue automat
 
 ### 4. Checklist sync
 
-The [sync-checklist-pr workflow](.github/workflows/sync-checklist-pr.yml) runs when you open or update a PR with `Closes #N`, replacing `(Issue: …)` with `(PR: …)` in `APPLICATION.md` and README.
+The [sync-checklist-pr workflow](.github/workflows/sync-checklist-pr.yml) runs when you open or update a PR with `Closes #N`, replacing `(Issue: …)` with `(PR: …)` in `APPLICATION.md` and README (on your PR branch).
 
-The [sync-checklist workflow](.github/workflows/sync-checklist.yml) runs when a checklist issue is closed. It checks the box in `APPLICATION.md`, refreshes the README dashboard and progress bar, and opens a PR.
+The [sync-checklist workflow](.github/workflows/sync-checklist.yml) runs when a checklist issue is closed. It checks the box in `APPLICATION.md`, refreshes the README dashboard and progress bar, and **commits directly to `main`** (no follow-up bot PR).
 
 ### 5. Submit to CNCF
 

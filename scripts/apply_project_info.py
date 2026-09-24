@@ -19,6 +19,12 @@ def section_prefix_lines(section_lines: List[str]) -> List[str]:
     """Preserve static guide blocks and checklist lines at the top of a section."""
     idx = 0
     preserved: List[str] = []
+
+    # Sections usually start with a blank line after the ## heading.
+    while idx < len(section_lines) and section_lines[idx].strip() == "":
+        preserved.append(section_lines[idx])
+        idx += 1
+
     if idx < len(section_lines) and section_lines[idx].strip() == "<!-- field-guide:start -->":
         while idx < len(section_lines):
             preserved.append(section_lines[idx])
@@ -26,12 +32,15 @@ def section_prefix_lines(section_lines: List[str]) -> List[str]:
                 idx += 1
                 break
             idx += 1
+
     while idx < len(section_lines) and section_lines[idx].strip() == "":
         preserved.append(section_lines[idx])
         idx += 1
+
     while idx < len(section_lines) and CHECKLIST_LINE.match(section_lines[idx]):
         preserved.append(section_lines[idx])
         idx += 1
+
     if idx < len(section_lines) and section_lines[idx].strip() == "":
         preserved.append(section_lines[idx])
     return preserved
@@ -69,7 +78,7 @@ def update_readme(content: str, metadata: Dict[str, str]) -> str:
         f"> **Project name:** {project_name}",
     )
     content = content.replace(
-        "> **Checklist issues created:** Run `./scripts/bootstrap-issues.sh` after creating your repo from this template.",
+        "> **Checklist issues:** Run `./scripts/bootstrap-issues.sh` after creating your repo from this template.",
         "> **Checklist issues:** Bootstrapped",
     )
     content = re.sub(

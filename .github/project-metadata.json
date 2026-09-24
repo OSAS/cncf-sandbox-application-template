@@ -1,0 +1,9 @@
+{
+  "project_name": "Sandbox App",
+  "project_summary": "A new Sandbox Application",
+  "org_repo_url": "N/A",
+  "project_repo_url": "https://github.com/OSAS/cncf-sandbox-application-template",
+  "website_url": "https://github.com/OSAS/cncf-sandbox-application-template",
+  "repository": "OSAS/cncf-sandbox-application-template",
+  "bootstrapped_at": "2026-09-23T17:45:39Z"
+}
