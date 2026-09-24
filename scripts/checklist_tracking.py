@@ -180,18 +180,20 @@ def update_files_for_pr(root: Path, repo: str, pr_number: int, issue_numbers: Li
     registry_path = root / ".github" / "issue-registry.json"
     registry = load_issue_registry(registry_path)
     application_path = root / "APPLICATION.md"
-    readme_path = root / "README.md"
-    application = application_path.read_text(encoding="utf-8")
+    before = application_path.read_text(encoding="utf-8")
+    application = before
     changed_slugs: List[str] = []
 
     for issue_number in issue_numbers:
         slug = slug_for_issue(registry, issue_number)
         if not slug:
             continue
+        # Closes #N is enough: swap Issue→PR and check the box. README mirrors APPLICATION.md.
         application = apply_pr_link(application, slug, pr_number, repo)
+        application = mark_checkbox_complete(application, slug)
         changed_slugs.append(slug)
 
-    if not changed_slugs:
+    if not changed_slugs or application == before:
         return False, []
 
     application_path.write_text(application, encoding="utf-8")
@@ -237,7 +239,7 @@ def main() -> int:
         if not changed:
             print("No checklist lines updated for PR", file=sys.stderr)
             return 0
-        print(f"Updated PR links for: {', '.join(slugs)}")
+        print(f"Updated PR links and checked boxes for: {', '.join(slugs)}")
         return 0
 
     if args.command == "sync-readme":

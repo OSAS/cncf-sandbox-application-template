@@ -24,7 +24,7 @@ Each section includes:
 - A checklist line with `(Issue: [#N](…))` (after bootstrap)
 - A **Your answer** area for form content
 
-Pick an issue, edit the relevant section(s) in `APPLICATION.md`, and open a pull request with `Closes #N`. Automation updates the checklist line to `(PR: [#…](…))` in **both** `APPLICATION.md` and [README.md](README.md). **Do not edit README** for answers or tracking.
+Pick an issue, edit the relevant section(s) in `APPLICATION.md`, and open a pull request with `Closes #N`. Do **not** manually check the checklist box — automation marks it `[x]` and updates `(PR: …)` in **both** `APPLICATION.md` and [README.md](README.md). **Do not edit README** for answers or tracking.
 
 Progress lives in README only; it updates when checklist boxes are checked after issues close.
 
@@ -42,9 +42,13 @@ When the PR merges to the default branch, GitHub closes the linked issue automat
 
 ### 4. Checklist sync
 
-The [sync-checklist-pr workflow](.github/workflows/sync-checklist-pr.yml) runs when you open or update a PR with `Closes #N`, replacing `(Issue: …)` with `(PR: …)` in `APPLICATION.md` and README (on your PR branch).
+The [sync-checklist-pr workflow](.github/workflows/sync-checklist-pr.yml) runs when you open or update a PR with `Closes #N`. On your PR branch it:
 
-The [sync-checklist workflow](.github/workflows/sync-checklist.yml) runs when a checklist issue is closed. It checks the box in `APPLICATION.md`, refreshes the README dashboard and progress bar, and **commits directly to `main`** (no follow-up bot PR).
+1. Replaces `(Issue: …)` with `(PR: …)`
+2. Checks the box (`[x]`) in `APPLICATION.md`
+3. Mirrors those lines and refreshes progress in README
+
+The [sync-checklist workflow](.github/workflows/sync-checklist.yml) is a fallback when a checklist issue is closed (e.g. if the PR link step did not run). It checks the box on `main` if needed.
 
 ### 5. Submit to CNCF
 

@@ -4,12 +4,14 @@
 
 ## Checklist items
 
-<!-- List checklist issue numbers this PR completes -->
+<!-- Required: Closes #N drives automation. When this PR opens, Actions checks the
+     box in APPLICATION.md/README and switches (Issue: …) → (PR: …).
+     Do not check boxes in this PR or in APPLICATION.md yourself. -->
 
 Closes #
 
 ## Application fields updated
 
-<!-- Which field(s) in APPLICATION.md were changed? -->
+<!-- Optional for reviewers: list `field_id` headings you edited in APPLICATION.md -->
 
-- [ ] See [APPLICATION.md](../APPLICATION.md) — list field IDs here, e.g. `project_summary`, `maintainers_file`
+- `field_id`
