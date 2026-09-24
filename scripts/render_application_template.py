@@ -45,7 +45,7 @@ def render() -> str:
         "",
         "Single source of truth for the CNCF sandbox application. Each `## field_id` section maps to the [official CNCF application form](https://github.com/cncf/sandbox/blob/main/.github/ISSUE_TEMPLATE/application.yml).",
         "",
-        "**Work here only:** Each checklist line shows `(Issue: …)` until you open a PR; automation then shows `(PR: …)` in this file and in [README.md](README.md). Edit answers below; do not edit README for application content.",
+        "**Work here only:** Each checklist line shows `(Issue: …)` until you open a PR with `Closes #N`; automation then checks the box and shows `(PR: …)` here and in [README.md](README.md). Edit answers below; do not edit README or toggle checklist boxes yourself.",
         "",
         "Run `./scripts/generate-submission.sh` when ready to submit to CNCF.",
         "",

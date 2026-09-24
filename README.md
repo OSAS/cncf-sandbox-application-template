@@ -39,9 +39,9 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 
 | Stage | Checklist line shows |
 | --- | --- |
-| After bootstrap | `(Issue: [#N](…))` — open GitHub issue |
-| After you open a PR with `Closes #N` | `(PR: [#N](…))` — in APPLICATION.md and this README |
-| After the PR merges | Checkbox `[x]`; issue closes |
+| After bootstrap | `- [ ] … (Issue: [#N](…))` |
+| After you open a PR with `Closes #N` | `- [x] … (PR: [#M](…))` in APPLICATION.md and this README |
+| After the PR merges | Issue closes; progress on `main` matches |
 
 ## Application progress
 
@@ -52,7 +52,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 
 ## Application checklist
 
-Each row links to the matching section in [APPLICATION.md](APPLICATION.md). `(Issue: …)` becomes `(PR: …)` when you open a pull request with `Closes #N`.
+Each row links to the matching section in [APPLICATION.md](APPLICATION.md). A PR with `Closes #N` checks the box and switches `(Issue: …)` to `(PR: …)` automatically — do not edit these lines by hand.
 
 <!-- application-dashboard:start -->
 ### [Read Prerequisites](APPLICATION.md#read_prerequisites)

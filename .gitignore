@@ -4,3 +4,5 @@
 .env.*
 .vscode/
 CNCF-SUBMISSION.md
+__pycache__/
+scripts/__pycache__/
