@@ -6,12 +6,14 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   sync-checklist:
     runs-on: ubuntu-latest
-    if: contains(github.event.issue.labels.*.name, 'checklist-item')
+    # Ignore closes caused by bot sync noise; only checklist-item issues.
+    if: >
+      contains(github.event.issue.labels.*.name, 'checklist-item') &&
+      github.event.issue.user.type != 'Bot'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
@@ -32,7 +34,7 @@ jobs:
           echo "found=true" >> "$GITHUB_OUTPUT"
           echo "Syncing checklist item: $slug (issue #${{ github.event.issue.number }})"
 
-      - name: Update APPLICATION.md checkbox
+      - name: Mark checkbox complete and update progress
         if: steps.slug.outputs.found == 'true'
         id: update
         env:
@@ -47,15 +49,14 @@ jobs:
             echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Create pull request with checklist update
+      # Commit directly to main. Do not open a follow-up bot PR — that re-triggers
+      # pull_request workflows and produces approval/noise cascades.
+      # Commits made with GITHUB_TOKEN do not start new workflow runs.
+      - name: Commit checklist update to main
         if: steps.update.outputs.changed == 'true'
-        uses: peter-evans/create-pull-request@v6
-        with:
-          commit-message: "docs: mark checklist item ${{ steps.slug.outputs.slug }} complete"
-          title: "docs: sync checklist — ${{ steps.slug.outputs.slug }}"
-          body: |
-            Automatically updates [APPLICATION.md](APPLICATION.md) and [README.md](README.md) after checklist issue #${{ github.event.issue.number }} was closed.
-
-            Closes checklist item: `${{ steps.slug.outputs.slug }}`
-          branch: bot/sync-checklist-${{ steps.slug.outputs.slug }}-${{ github.event.issue.number }}
-          delete-branch: true
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add APPLICATION.md README.md
+          git commit -m "docs: mark checklist item ${{ steps.slug.outputs.slug }} complete"
+          git push origin HEAD:main

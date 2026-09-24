@@ -11,14 +11,20 @@ permissions:
 jobs:
   link-pr-on-checklist:
     runs-on: ubuntu-latest
+    # Skip bot PRs and re-entry after this workflow pushes to the PR branch.
+    if: >
+      github.event.pull_request.user.login != 'github-actions[bot]' &&
+      github.actor != 'github-actions[bot]'
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Issue links to PR links
+        id: link
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
           PR_BODY: ${{ github.event.pull_request.body }}
@@ -35,6 +41,7 @@ jobs:
 
           if [ -z "${issues}" ]; then
             echo "No closing keywords found in PR body; skipping."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
@@ -45,14 +52,19 @@ jobs:
 
           python3 scripts/update_checklist_progress.py
 
-      - name: Commit checklist PR link updates
-        run: |
           if git diff --quiet APPLICATION.md README.md; then
             echo "No checklist tracking changes."
-            exit 0
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Commit checklist PR link updates
+        if: steps.link.outputs.changed == 'true'
+        run: |
           git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add APPLICATION.md README.md
-          git commit -m "docs: link checklist items to PR #${{ github.event.pull_request.number }}"
+          # [skip ci] reduces noise on hosts that honor it; actor guard above is the real loop break.
+          git commit -m "docs: link checklist items to PR #${{ github.event.pull_request.number }} [skip ci]"
           git push
