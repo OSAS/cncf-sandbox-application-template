@@ -11,8 +11,9 @@ permissions:
 jobs:
   link-pr-on-checklist:
     runs-on: ubuntu-latest
-    # Skip bot PRs and re-entry after this workflow pushes to the PR branch.
+    # End-user application repos only; skip bot PRs / re-entry after push.
     if: >
+      !github.event.repository.is_template &&
       github.event.pull_request.user.login != 'github-actions[bot]' &&
       github.actor != 'github-actions[bot]'
     steps:

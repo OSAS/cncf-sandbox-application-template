@@ -19,8 +19,9 @@ concurrency:
 jobs:
   sync-checklist:
     runs-on: ubuntu-latest
-    # Ignore closes caused by bot sync noise; only checklist-item issues.
+    # End-user application repos only; ignore bot closes; checklist-item issues.
     if: >
+      !github.event.repository.is_template &&
       contains(github.event.issue.labels.*.name, 'checklist-item') &&
       github.event.issue.user.type != 'Bot'
     steps:

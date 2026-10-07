@@ -55,7 +55,7 @@ The [sync-checklist workflow](.github/workflows/sync-checklist.yml) is a fallbac
 When all checklist items are complete:
 
 ```bash
-# Validate all required fields are filled in
+# Validate against the live CNCF form and your APPLICATION.md answers
 ./scripts/generate-submission.sh --validate
 
 # Option A: create the CNCF issue directly (requires gh auth)
@@ -65,7 +65,11 @@ When all checklist items are complete:
 ./scripts/generate-submission.sh
 ```
 
+You do **not** sync the form while preparing your application. `--validate` and `--create-issue` fetch the live CNCF application template and map your answers onto it. If CNCF added a new required field, the command tells you which `## field_id` section to add in `APPLICATION.md`.
+
 `--create-issue` records the CNCF issue URL in README metadata and in the `final_review` section of `APPLICATION.md`.
+
+Use `--offline` only if you must generate from the local form snapshot without network access.
 
 ## Branch naming
 
@@ -95,6 +99,26 @@ Issues created by the bootstrap script use these labels:
 | `critical` | Required before CNCF submission |
 | `recommended` | Improves review experience |
 | `phase:*` | Application section grouping |
+
+## Template maintainers
+
+Applicants should ignore this section. Keeping [`.github/cncf-form.json`](.github/cncf-form.json) aligned with [`cncf/sandbox` `application.yml`](https://github.com/cncf/sandbox/blob/main/.github/ISSUE_TEMPLATE/application.yml) is for template maintainers only (so *new* forks start current).
+
+```bash
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r requirements-dev.txt
+./scripts/sync-cncf-form.sh --check
+./scripts/sync-cncf-form.sh --write --merge-application
+./scripts/bootstrap-issues.sh --non-interactive   # only if new checklist slugs appeared
+```
+
+- `--check` exits non-zero when the committed form does not match upstream (CI).
+- `--write` updates the form snapshot and checklist stubs.
+- `--merge-application` rewrites `APPLICATION.md` while preserving answers and Issue/PR links.
+- Do not run `python3 scripts/render_application_template.py` on a fork with real answers; it overwrites the file.
+
+A weekly workflow ([sync-cncf-form.yml](.github/workflows/sync-cncf-form.yml)) opens a PR when upstream drifts. If sync reports unmatched fields, add a mapping in [`scripts/cncf_field_aliases.json`](scripts/cncf_field_aliases.json).
+
 
 ## References
 

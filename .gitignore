@@ -4,5 +4,10 @@
 .env.*
 .vscode/
 CNCF-SUBMISSION.md
+CNCF-SUBMISSION.md.meta.json
+APPLICATION-orphaned-answers.md
+APPLICATION-orphaned-answers-*.md
 __pycache__/
 scripts/__pycache__/
+.venv/
+.pydeps/

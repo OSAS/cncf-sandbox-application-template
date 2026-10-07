@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 """Render APPLICATION.md with checklist checkboxes (template maintenance)."""
 
+from __future__ import annotations
+
 import json
 import sys
 from pathlib import Path
@@ -9,28 +11,41 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from checklist_tracking import issue_token_placeholder
 
 ROOT = Path(__file__).resolve().parent.parent
-FORM = json.loads((ROOT / ".github/cncf-form.json").read_text())
-LABELS = json.loads((ROOT / "scripts/checklist_checkbox_labels.json").read_text())
-PLACEHOLDERS = json.loads((ROOT / "scripts/application_field_placeholders.json").read_text())
-GUIDES = json.loads((ROOT / "scripts/application_field_guides.json").read_text())
-
-# First field id per checklist slug (form field order)
-SLUG_PRIMARY_FIELD: dict[str, str] = {}
-for section in FORM["sections"]:
-    for field in section["fields"]:
-        for slug in field.get("checklist", []):
-            SLUG_PRIMARY_FIELD.setdefault(slug, field["id"])
-
-CHECKBOX_FIELDS = {"not_reference_architecture", "trademark_agreement", "ip_policy_agreement"}
 
 
-def checklist_line(slug: str) -> str:
-    label = LABELS[slug]
+def load_artifacts(root: Path = ROOT):
+    form = json.loads((root / ".github/cncf-form.json").read_text())
+    labels = json.loads((root / "scripts/checklist_checkbox_labels.json").read_text())
+    placeholders = json.loads((root / "scripts/application_field_placeholders.json").read_text())
+    guides = json.loads((root / "scripts/application_field_guides.json").read_text())
+    return form, labels, placeholders, guides
+
+
+def slug_primary_field(form: dict) -> dict[str, str]:
+    primary: dict[str, str] = {}
+    for section in form["sections"]:
+        for field in section["fields"]:
+            for slug in field.get("checklist", []):
+                primary.setdefault(slug, field["id"])
+    return primary
+
+
+def checkbox_field_ids(form: dict) -> set[str]:
+    return {
+        field["id"]
+        for section in form["sections"]
+        for field in section["fields"]
+        if field.get("type") == "checkbox"
+    }
+
+
+def checklist_line(slug: str, labels: dict[str, str]) -> str:
+    label = labels[slug]
     return f"- [ ] {label} <!-- checklist:{slug} --> {issue_token_placeholder(slug)}"
 
 
-def emit_guide(lines: list[str], field_id: str) -> None:
-    guide = GUIDES.get(field_id, "").strip()
+def emit_guide(lines: list[str], field_id: str, guides: dict[str, str]) -> None:
+    guide = guides.get(field_id, "").strip()
     if not guide:
         return
     lines.append("<!-- field-guide:start -->")
@@ -39,7 +54,18 @@ def emit_guide(lines: list[str], field_id: str) -> None:
     lines.append("")
 
 
-def render() -> str:
+def form_option_label(form: dict, field_id: str) -> str:
+    for section in form["sections"]:
+        for field in section["fields"]:
+            if field["id"] == field_id:
+                return field.get("option_label") or field.get("label") or field_id
+    return field_id
+
+
+def render(root: Path = ROOT) -> str:
+    form, labels, placeholders, guides = load_artifacts(root)
+    primary = slug_primary_field(form)
+    checkboxes = checkbox_field_ids(form)
     lines = [
         "# CNCF Sandbox Application",
         "",
@@ -62,17 +88,17 @@ def render() -> str:
         lines.append("")
         show_slug = slug and slug not in emitted_slugs
         if show_slug:
-            emit_guide(lines, field_id)
-            if field_id in CHECKBOX_FIELDS:
-                text = PLACEHOLDERS[field_id]
+            emit_guide(lines, field_id, guides)
+            if field_id in checkboxes:
+                text = placeholders.get(field_id) or form_option_label(form, field_id)
                 lines.append(
                     f"- [ ] {text} <!-- checklist:{slug} --> {issue_token_placeholder(slug)}"
                 )
             else:
-                lines.append(checklist_line(slug))
+                lines.append(checklist_line(slug, labels))
             lines.append("")
             emitted_slugs.add(slug)
-        if field_id in CHECKBOX_FIELDS:
+        if field_id in checkboxes:
             if show_slug:
                 lines.append(
                     "**Your answer:** (check the box above; add notes below if needed)"
@@ -82,7 +108,7 @@ def render() -> str:
                 lines.append("")
             return
 
-        body = PLACEHOLDERS.get(field_id, "")
+        body = placeholders.get(field_id, "")
         if not body:
             return
         if show_slug and body.startswith("_"):
@@ -93,11 +119,11 @@ def render() -> str:
 
     add_section("read_prerequisites", "read-prerequisites")
 
-    for section in FORM["sections"]:
+    for section in form["sections"]:
         for field in section["fields"]:
             field_id = field["id"]
             slugs = field.get("checklist", [])
-            slug = slugs[0] if slugs and SLUG_PRIMARY_FIELD.get(slugs[0]) == field_id else None
+            slug = slugs[0] if slugs and primary.get(slugs[0]) == field_id else None
             add_section(field_id, slug)
 
     add_section("final_review", "final-review")
@@ -108,3 +134,8 @@ if __name__ == "__main__":
     out = ROOT / "APPLICATION.md"
     out.write_text(render())
     print(f"Wrote {out}")
+    print(
+        "Warning: this overwrites APPLICATION.md. Prefer "
+        "`./scripts/sync-cncf-form.sh --write --merge-application`.",
+        file=sys.stderr,
+    )

@@ -26,6 +26,8 @@ Based on this form, a Contribution Agreement is sent to your contacts. **It must
 > [!CAUTION]
 > The TOC must approve your application and a Contribution Agreement must be signed before the project is an official CNCF project. Do not represent the project as "donated" or "contributed" until those steps complete.
 
+**Critical requirements (CNCF may close the application if missing):** Apache 2.0 license; MAINTAINERS file with Name, GitHub ID, and Company/Organization; repository at least 6 months old with active development; reusable project (not a reference architecture); parent-separation vote linked in Additional information if applicable.
+
 When finished, add review notes or links under **Your answer** below and open a PR with `Closes` and the issue number on the checklist line.
 <!-- field-guide:end -->
 
@@ -80,6 +82,8 @@ Document URLs for this application:
 - `org_repo_url` — org repo if all repos under the org are in scope, or N/A
 - `project_repo_url` — primary project repository
 - `additional_repos` — other in-scope repos, or leave blank
+
+If this project is separating from a parent organization, link a **public maintainer vote** in `additional_information` (required by the CNCF form).
 <!-- field-guide:end -->
 
 - [ ] Org and repository URLs documented <!-- checklist:org-and-repo-urls --> (Issue: #ISSUE_ORG_AND_REPO_URLS)
@@ -95,18 +99,6 @@ _Primary project repository URL._
 ## additional_repos
 
 _Additional repository URLs in scope, or leave blank._
-
-## parent_separation_vote
-
-<!-- field-guide:start -->
-If separating from a parent project, link a **public issue** in the parent repo showing maintainer consensus to split. Otherwise document **N/A** in `parent_separation_vote`.
-<!-- field-guide:end -->
-
-- [ ] Parent project separation vote linked (or N/A documented) <!-- checklist:parent-separation-vote --> (Issue: #ISSUE_PARENT_SEPARATION_VOTE)
-
-**Your answer:**
-
-_If separating from a parent project, link to the public maintainer vote issue. Otherwise write N/A._
 
 ## website_url
 
@@ -349,26 +341,12 @@ If accepted, the project will follow the CNCF IP Policy. Check the box when you 
 
 _Optional notes._
 
-## license
-
-<!-- field-guide:start -->
-**Critical:** License must be Apache 2.0 (or an approved exception documented separately) **before** acceptance—not after.
-
-Document the license and link to the `LICENSE` file in the project repo.
-
-Common auto-closure mistakes: BSL/GPL, or promising to relicense later.
-<!-- field-guide:end -->
-
-- [ ] Apache 2.0 license compliance documented <!-- checklist:apache-2-license --> (Issue: #ISSUE_APACHE_2_LICENSE)
-
-**Your answer:**
-
-_Project license (must be Apache 2.0) and link to LICENSE file._
-
 ## license_exception
 
 <!-- field-guide:start -->
-Document whether a CNCF license exception is needed. Write **N/A** if using Apache 2.0 with no exception.
+**Critical:** Core project code must be Apache 2.0 before acceptance (or an approved CNCF license exception). Do not promise to relicense later.
+
+Document whether a license exception is needed and link the `LICENSE` file. Write **N/A** if using Apache 2.0 with no exception.
 <!-- field-guide:end -->
 
 - [ ] License exception review completed <!-- checklist:license-exception --> (Issue: #ISSUE_LICENSE_EXCEPTION)
@@ -401,34 +379,6 @@ Optional: link TAG engagement, presentations, or a completed General Technical R
 
 _TAG engagement, presentations, or General Technical Review links. Leave blank if not applicable._
 
-## repo_age_evidence
-
-<!-- field-guide:start -->
-**Critical:** Repository must be at least **6 months** old with evidence of active development (recent commits, releases, etc.).
-
-Document creation date and activity below.
-
-Common mistake: submitting a repo younger than six months.
-<!-- field-guide:end -->
-
-- [ ] Repository age and active development verified <!-- checklist:repo-age-and-activity --> (Issue: #ISSUE_REPO_AGE_AND_ACTIVITY)
-
-**Your answer:**
-
-_Repository creation date and evidence of active development (recent commits, releases, etc.)._
-
-## maintainer_diversity
-
-<!-- field-guide:start -->
-Document maintainer **employer** diversity. Different GitHub org memberships do **not** count as organization diversity.
-<!-- field-guide:end -->
-
-- [ ] Maintainer organization diversity documented <!-- checklist:maintainer-diversity --> (Issue: #ISSUE_MAINTAINER_DIVERSITY)
-
-**Your answer:**
-
-_Maintainer employers. Different GitHub org memberships do not count as organization diversity._
-
 ## application_contact_emails
 
 <!-- field-guide:start -->
@@ -452,6 +402,8 @@ _Contribution Agreement signatory details. Use the table format from the CNCF fo
 
 <!-- field-guide:start -->
 Add CNCF leadership contacts familiar with the project (TOC, TAGs, etc.) in `cncf_contacts` and any extra TOC context in `additional_information`.
+
+If separating from a parent project, include the public maintainer-vote issue in `additional_information`.
 <!-- field-guide:end -->
 
 - [ ] CNCF contacts and additional information completed <!-- checklist:additional-information --> (Issue: #ISSUE_ADDITIONAL_INFORMATION)
@@ -473,6 +425,8 @@ When every checklist item above is complete:
 ./scripts/generate-submission.sh --validate
 ./scripts/generate-submission.sh --create-issue --project-name "YourProject"
 ```
+
+You do not need to sync the CNCF form first — `--validate` / `--create-issue` check the live CNCF template and map your answers onto it.
 
 Or copy `CNCF-SUBMISSION.md` into a [new CNCF sandbox issue](https://github.com/cncf/sandbox/issues/new?assignees=&labels=New&projects=&template=application.yml&title=%5BSandbox%5D+%3CProject+Name%3E).
 

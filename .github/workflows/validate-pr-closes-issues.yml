@@ -11,7 +11,9 @@ permissions:
 jobs:
   comment-missing-closes:
     runs-on: ubuntu-latest
-    if: github.event.pull_request.user.login != 'github-actions[bot]'
+    if: >
+      !github.event.repository.is_template &&
+      github.event.pull_request.user.login != 'github-actions[bot]'
     steps:
       - name: Check for closing keywords
         uses: actions/github-script@v7
