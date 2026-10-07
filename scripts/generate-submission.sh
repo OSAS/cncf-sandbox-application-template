@@ -2,10 +2,13 @@
 set -euo pipefail
 
 # Generates CNCF-SUBMISSION.md from APPLICATION.md for one-step CNCF submission.
+# Fetches the live CNCF form so submission matches the current official template.
+# Applicants do not need to sync their worksheet first.
 #
 # Prerequisites:
 #   - jq installed
 #   - python3 installed
+#   - network access (for live form check on --validate / --create-issue)
 #
 # Usage:
 #   ./scripts/generate-submission.sh              # generate CNCF-SUBMISSION.md
@@ -17,27 +20,36 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 FORM_FILE="${ROOT_DIR}/.github/cncf-form.json"
 ANSWERS_FILE="${ROOT_DIR}/APPLICATION.md"
 OUTPUT_FILE="${ROOT_DIR}/CNCF-SUBMISSION.md"
+FORM_META_FILE="${OUTPUT_FILE}.meta.json"
 METADATA_FILE="${ROOT_DIR}/.github/project-metadata.json"
 GENERATOR="${ROOT_DIR}/scripts/generate_submission.py"
 VALIDATE=false
 CREATE_ISSUE=false
 PROJECT_NAME=""
+PREFER_LIVE_FORM=true
+REQUIRE_LIVE_FORM=false
 
 while [[ $# -gt 0 ]]; do
   case "${1}" in
     --validate)
       VALIDATE=true
+      REQUIRE_LIVE_FORM=true
       ;;
     --create-issue)
       CREATE_ISSUE=true
       VALIDATE=true
+      REQUIRE_LIVE_FORM=true
       ;;
     --project-name)
       PROJECT_NAME="${2:-}"
       shift
       ;;
+    --offline)
+      PREFER_LIVE_FORM=false
+      REQUIRE_LIVE_FORM=false
+      ;;
     -h|--help)
-      sed -n '2,14p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
+      sed -n '2,16p' "${BASH_SOURCE[0]}" | sed 's/^# \{0,1\}//'
       exit 0
       ;;
     *)
@@ -60,7 +72,27 @@ if [[ ! -f "${FORM_FILE}" || ! -f "${ANSWERS_FILE}" || ! -f "${GENERATOR}" ]]; t
   exit 1
 fi
 
-export FORM_FILE ANSWERS_FILE OUTPUT_FILE VALIDATE
+ensure_pyyaml() {
+  if python3 -c "import yaml" >/dev/null 2>&1; then
+    return 0
+  fi
+  local deps="${ROOT_DIR}/.pydeps"
+  mkdir -p "${deps}"
+  echo "Installing PyYAML for live CNCF form check..."
+  pip3 install --target "${deps}" -q -r "${ROOT_DIR}/requirements-dev.txt"
+  export PYTHONPATH="${deps}${PYTHONPATH:+:${PYTHONPATH}}"
+  if ! python3 -c "import yaml" >/dev/null 2>&1; then
+    echo "Error: could not import PyYAML after install." >&2
+    exit 1
+  fi
+}
+
+if [[ "${PREFER_LIVE_FORM}" == true || "${REQUIRE_LIVE_FORM}" == true ]]; then
+  ensure_pyyaml
+fi
+
+export FORM_FILE ANSWERS_FILE OUTPUT_FILE FORM_META_FILE VALIDATE ROOT_DIR
+export PREFER_LIVE_FORM REQUIRE_LIVE_FORM
 python3 "${GENERATOR}"
 
 if [[ "${CREATE_ISSUE}" == true ]]; then
@@ -79,9 +111,13 @@ if [[ "${CREATE_ISSUE}" == true ]]; then
     echo "Error: --project-name is required with --create-issue (or run bootstrap-issues.sh first)." >&2
     exit 1
   fi
+  if [[ ! -f "${FORM_META_FILE}" ]]; then
+    echo "Error: missing ${FORM_META_FILE} from form generation." >&2
+    exit 1
+  fi
 
-  title_prefix="$(jq -r '.title_prefix' "${FORM_FILE}")"
-  labels="$(jq -r '.issue_labels | join(",")' "${FORM_FILE}")"
+  title_prefix="$(jq -r '.title_prefix' "${FORM_META_FILE}")"
+  labels="$(jq -r '.issue_labels | join(",")' "${FORM_META_FILE}")"
   echo "Creating CNCF sandbox application issue..."
   issue_url="$(gh issue create \
     -R cncf/sandbox \

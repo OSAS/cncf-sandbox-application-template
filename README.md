@@ -33,6 +33,10 @@ This repository helps you prepare a [CNCF Sandbox application](https://github.co
    ./scripts/generate-submission.sh --create-issue
    ```
 
+   You do **not** need to sync the CNCF form while working. At submit time,
+   `generate-submission.sh` checks the live CNCF application template and maps
+   your `APPLICATION.md` answers onto it.
+
 See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 
 ## How tracking works
@@ -46,7 +50,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 ## Application progress
 
 <!-- checklist-progress:start -->
-> **Application progress:** **0 / 33** items complete (0%)
+> **Application progress:** **0 / 29** items complete (0%)  
 > `░░░░░░░░░░░░░░░░░░░░` 0%
 <!-- checklist-progress:end -->
 
@@ -55,7 +59,7 @@ See [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow.
 Each row links to the matching section in [APPLICATION.md](APPLICATION.md). A PR with `Closes #N` checks the box and switches `(Issue: …)` to `(PR: …)` automatically — do not edit these lines by hand.
 
 <!-- application-dashboard:start -->
-### [Read Prerequisites](APPLICATION.md#read_prerequisites)
+### [read_prerequisites](APPLICATION.md#read_prerequisites)
 
 - [ ] Reviewed all prerequisite documentation <!-- checklist:read-prerequisites --> (Issue: #ISSUE_READ_PREREQUISITES)
 
@@ -76,10 +80,6 @@ Each row links to the matching section in [APPLICATION.md](APPLICATION.md). A PR
 ### [project_repo_url](APPLICATION.md#project_repo_url)
 
 ### [additional_repos](APPLICATION.md#additional_repos)
-
-### [parent_separation_vote](APPLICATION.md#parent_separation_vote)
-
-- [ ] Parent project separation vote linked (or N/A documented) <!-- checklist:parent-separation-vote --> (Issue: #ISSUE_PARENT_SEPARATION_VOTE)
 
 ### [website_url](APPLICATION.md#website_url)
 
@@ -159,10 +159,6 @@ Each row links to the matching section in [APPLICATION.md](APPLICATION.md). A PR
 
 - [ ] If the project is accepted, I agree the project will follow the CNCF IP Policy <!-- checklist:ip-policy-agreement --> (Issue: #ISSUE_IP_POLICY_AGREEMENT)
 
-### [license](APPLICATION.md#license)
-
-- [ ] Apache 2.0 license compliance documented <!-- checklist:apache-2-license --> (Issue: #ISSUE_APACHE_2_LICENSE)
-
 ### [license_exception](APPLICATION.md#license_exception)
 
 - [ ] License exception review completed <!-- checklist:license-exception --> (Issue: #ISSUE_LICENSE_EXCEPTION)
@@ -174,14 +170,6 @@ Each row links to the matching section in [APPLICATION.md](APPLICATION.md). A PR
 ### [domain_technical_review](APPLICATION.md#domain_technical_review)
 
 - [ ] Domain Technical Review linked (if applicable) <!-- checklist:domain-technical-review --> (Issue: #ISSUE_DOMAIN_TECHNICAL_REVIEW)
-
-### [repo_age_evidence](APPLICATION.md#repo_age_evidence)
-
-- [ ] Repository age and active development verified <!-- checklist:repo-age-and-activity --> (Issue: #ISSUE_REPO_AGE_AND_ACTIVITY)
-
-### [maintainer_diversity](APPLICATION.md#maintainer_diversity)
-
-- [ ] Maintainer organization diversity documented <!-- checklist:maintainer-diversity --> (Issue: #ISSUE_MAINTAINER_DIVERSITY)
 
 ### [application_contact_emails](APPLICATION.md#application_contact_emails)
 
@@ -205,6 +193,7 @@ Each row links to the matching section in [APPLICATION.md](APPLICATION.md). A PR
 - [CNCF Sandbox repository](https://github.com/cncf/sandbox)
 - [CNCF Project Lifecycle & Process](https://github.com/cncf/toc/blob/main/process/README.md)
 - [CNCF Sandbox Application Form](https://github.com/cncf/sandbox/issues/new?assignees=&labels=New&projects=&template=application.yml&title=%5BSandbox%5D+%3CProject+Name%3E)
+
 
 ## License
 
