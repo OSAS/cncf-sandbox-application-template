@@ -7,7 +7,6 @@ on:
 
 permissions:
   contents: write
-  pull-requests: write
 
 jobs:
   sync:
@@ -17,6 +16,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          # Needed so the bot can push a sync branch.
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -43,12 +45,40 @@ jobs:
         if: steps.check.outputs.drift == 'true'
         run: python3 scripts/sync_cncf_form.py --write --merge-application --report | tee form-sync-report.md
 
-      - name: Open pull request
+      # Org policy blocks Actions from creating PRs. Push a branch instead;
+      # a maintainer can open the PR from the compare link in the job summary.
+      - name: Push sync branch
         if: steps.check.outputs.drift == 'true'
-        uses: peter-evans/create-pull-request@v7
-        with:
-          commit-message: "chore: sync CNCF sandbox application form"
-          title: "chore: sync CNCF sandbox application form"
-          body-path: form-sync-report.md
-          branch: chore/sync-cncf-form
-          delete-branch: true
+        env:
+          BRANCH: chore/sync-cncf-form
+        run: |
+          set -euo pipefail
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "No file changes after sync; nothing to push."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git checkout -B "${BRANCH}"
+          # Report is for humans reading the Actions summary; do not commit it.
+          git add -A
+          git reset -- form-sync-report.md 2>/dev/null || true
+          git commit -m "chore: sync CNCF sandbox application form"
+          git push --force-with-lease origin "HEAD:refs/heads/${BRANCH}"
+
+          compare_url="${{ github.server_url }}/${{ github.repository }}/compare/${{ github.event.repository.default_branch }}...${BRANCH}?expand=1"
+          {
+            echo "## CNCF form sync branch ready"
+            echo
+            echo "Org policy prevents Actions from opening PRs."
+            echo
+            echo "- Branch: \`${BRANCH}\`"
+            echo "- Open a PR: ${compare_url}"
+            echo
+            echo "### Sync report"
+            echo
+            cat form-sync-report.md
+          } >> "$GITHUB_STEP_SUMMARY"
+          echo "Pushed ${BRANCH}. Open a PR: ${compare_url}"
